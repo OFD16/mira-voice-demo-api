@@ -1,0 +1,42 @@
+{
+  "name": "mira-voice-demo-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mira Voice Demo — backend: session/token API + LiveKit voice agent (STT → LLM → TTS or speech-to-speech), memory (pgvector), fail-closed safety, latency metrics.",
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev:api": "tsx watch src/server.ts",
+    "dev:agent": "tsx src/agent.ts dev",
+    "start:api": "tsx src/server.ts",
+    "start:agent": "tsx src/agent.ts start",
+    "console": "tsx src/agent.ts console",
+    "download-files": "tsx src/agent.ts download-files",
+    "test": "tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "make-exercise": "node scripts/make-exercise.mjs"
+  },
+  "dependencies": {
+    "@livekit/agents": "1.9.1",
+    "@livekit/agents-plugin-cartesia": "1.9.1",
+    "@livekit/agents-plugin-deepgram": "1.9.1",
+    "@livekit/agents-plugin-openai": "1.9.1",
+    "@livekit/agents-plugin-silero": "1.9.1",
+    "@livekit/rtc-node": "^1.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "livekit-server-sdk": "^2.19.1",
+    "openai": "^4.77.0",
+    "pg": "^8.13.1",
+    "pgvector": "^0.2.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.11.10",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
