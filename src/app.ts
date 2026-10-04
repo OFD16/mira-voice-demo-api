@@ -21,15 +21,7 @@ const SessionBody = z.object({ userId: UserId, pipeline: z.enum(['cascaded', 're
 //   Terms: shared secret, timing attack, secret in client. Test: npm test -- --test-name-pattern=api
 export function requireDemoKey(expected: string) {
   return (req: Request, res: Response, next: NextFunction) => {
-    // @sol-start L1-09
-    const got = Buffer.from(String(req.header('x-demo-key') ?? ''));
-    const want = Buffer.from(expected);
-    if (got.length !== want.length || !timingSafeEqual(got, want)) {
-      res.status(401).json({ error: 'unauthorized' });
-      return;
-    }
-    next();
-    // @sol-end
+    throw new Error('TODO(L1-09) — see docs/LESSONS.md');
   };
 }
 

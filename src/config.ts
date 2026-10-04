@@ -21,12 +21,5 @@ export type Config = z.infer<typeof EnvSchema>;
 //   - Never print the VALUES — they are secrets.
 //   Terms: fail-fast, 12-factor config. Test: npm test -- --test-name-pattern=config
 export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
-  // @sol-start L1-01
-  const r = EnvSchema.safeParse(env);
-  if (!r.success) {
-    const keys = [...new Set(r.error.issues.map((i) => i.path.join('.')))].join(', ');
-    throw new Error(`Invalid env: ${keys}`);
-  }
-  return r.data;
-  // @sol-end
+  throw new Error('TODO(L1-01) — see docs/LESSONS.md');
 }

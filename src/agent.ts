@@ -62,15 +62,7 @@ class Companion extends voice.Agent {
   //   Common mistake: asking the LLM to "be careful" in the prompt instead — a prompt can be jailbroken, code can't.
   //   Terms: deterministic crisis protocol, StopResponse, onUserTurnCompleted hook.
   override async onUserTurnCompleted(_chatCtx: llm.ChatContext, newMessage: llm.ChatMessage): Promise<void> {
-    // @sol-start L1-07
-    const text = newMessage.textContent ?? '';
-    const v = await checkSafety(text);
-    this.emit({ type: 'safety', flagged: v.flag, layer: v.layer, ms: Math.round(v.ms) });
-    if (v.flag) {
-      this.session.say(looksTurkish(text) ? CRISIS_REPLY_TR : CRISIS_REPLY_EN, { allowInterruptions: false });
-      throw new voice.StopResponse();
-    }
-    // @sol-end
+    throw new Error('TODO(L1-07) — see docs/LESSONS.md');
   }
 }
 
@@ -83,22 +75,7 @@ class Companion extends voice.Agent {
 //   Common mistake: minDuration 0 → the agent stops talking every time the user coughs (false interruption).
 //   Terms: cascaded vs S2S, VAD, endpointing, turn detector, barge-in.
 function buildSession(pipeline: Pipeline, vad: silero.VAD): voice.AgentSession {
-  // @sol-start L1-08
-  if (pipeline === 'realtime') {
-    return new voice.AgentSession({ llm: new openai.realtime.RealtimeModel({ voice: 'alloy' }) });
-  }
-  return new voice.AgentSession({
-    vad,
-    stt: new deepgram.STT({ model: 'nova-3', language: 'multi' }),
-    llm: new openai.LLM({ model: 'gpt-4o-mini', temperature: 0.7 }),
-    tts: new cartesia.TTS({ model: 'sonic-2' }),
-    turnHandling: {
-      turnDetection: new inference.TurnDetector(),
-      endpointing: { minDelay: Number(process.env.MIN_DELAY ?? 500), maxDelay: 3000 },
-      interruption: { enabled: true, minDuration: 500, minWords: 1 },
-    },
-  });
-  // @sol-end
+  throw new Error('TODO(L1-08) — see docs/LESSONS.md');
 }
 
 export default defineAgent({

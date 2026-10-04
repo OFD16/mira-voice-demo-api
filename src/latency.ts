@@ -25,21 +25,7 @@ export class LatencyTracker {
   private turns = new Map<string, Partial<TurnLatency>>();
 
   add(m: AnyMetric): TurnLatency | null {
-    // @sol-start L1-04
-    const id = m.speechId;
-    if (!id) return null;
-    const t = this.turns.get(id) ?? { speechId: id };
-    if (m.type === 'eou_metrics') {
-      t.eouMs = Number(m.endOfUtteranceDelayMs);
-      t.sttMs = Number(m.transcriptionDelayMs);
-    } else if (m.type === 'llm_metrics') t.ttftMs = Number(m.ttftMs);
-    else if (m.type === 'tts_metrics') t.ttfbMs = Number(m.ttfbMs);
-    else return null;
-    this.turns.set(id, t);
-    if (t.eouMs == null || t.ttftMs == null || t.ttfbMs == null) return null;
-    this.turns.delete(id);
-    return { ...(t as TurnLatency), totalMs: Math.round(t.eouMs + t.ttftMs + t.ttfbMs) };
-    // @sol-end
+    throw new Error('TODO(L1-04) — see docs/LESSONS.md');
   }
 
   get pending() {

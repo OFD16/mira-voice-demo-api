@@ -16,15 +16,5 @@ export type ParticipantMeta = { pipeline: Pipeline };
 //   - return { serverUrl, roomName, token } — the API secret must never leave the server
 //   Terms: JWT, access token, least privilege, TTL. Test: npm test -- --test-name-pattern=session
 export async function createSession(cfg: Config, userId: string, pipeline: Pipeline): Promise<SessionInfo> {
-  // @sol-start L1-02
-  const roomName = `mira-${userId}-${randomUUID().slice(0, 8)}`;
-  const meta: ParticipantMeta = { pipeline };
-  const at = new AccessToken(cfg.LIVEKIT_API_KEY, cfg.LIVEKIT_API_SECRET, {
-    identity: userId,
-    metadata: JSON.stringify(meta),
-    ttl: '15m',
-  });
-  at.addGrant({ room: roomName, roomJoin: true, canPublish: true, canSubscribe: true, canPublishData: true });
-  return { serverUrl: cfg.LIVEKIT_URL, roomName, token: await at.toJwt() };
-  // @sol-end
+  throw new Error('TODO(L1-02) — see docs/LESSONS.md');
 }

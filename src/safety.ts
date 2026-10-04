@@ -57,27 +57,5 @@ export async function checkSafety(
   text: string,
   { classify = openaiClassifier, timeoutMs = 600 }: { classify?: Classifier; timeoutMs?: number } = {},
 ): Promise<SafetyVerdict> {
-  // @sol-start L1-03
-  const t0 = performance.now();
-  const ms = () => performance.now() - t0;
-  if (!text.trim()) return { flag: false, layer: 'none', ms: 0 };
-  if (KEYWORDS.some((r) => r.test(text))) return { flag: true, layer: 'keyword', ms: ms() };
-
-  const ctrl = new AbortController();
-  let timer: NodeJS.Timeout | undefined;
-  try {
-    const timeout = new Promise<never>((_, rej) => {
-      timer = setTimeout(() => {
-        ctrl.abort();
-        rej(new Error('safety classifier timeout'));
-      }, timeoutMs);
-    });
-    const out = await Promise.race([classify(text, ctrl.signal), timeout]);
-    return { flag: out.trim().toUpperCase() !== 'SAFE', layer: 'classifier', ms: ms() };
-  } catch {
-    return { flag: true, layer: 'fail_closed', ms: ms() };
-  } finally {
-    clearTimeout(timer);
-  }
-  // @sol-end
+  throw new Error('TODO(L1-03) — see docs/LESSONS.md');
 }

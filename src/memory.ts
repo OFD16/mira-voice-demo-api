@@ -14,12 +14,7 @@ export type MemoryRow = { id: string; fact: string; created_at: string };
 //   Common mistake #2: string-concatenating userId into SQL → SQL injection. Always use $1 placeholders.
 //   Terms: embedding, cosine distance (<=>), RAG, HNSW index, tenant isolation. Test: npm test -- --test-name-pattern=memory
 export function recallQuery(userId: string, embeddingSql: string, k: number): Query {
-  // @sol-start L1-05
-  return {
-    text: 'SELECT id, fact FROM memories WHERE user_id = $1 ORDER BY embedding <=> $2 LIMIT $3',
-    values: [userId, embeddingSql, k],
-  };
-  // @sol-end
+  throw new Error('TODO(L1-05) — see docs/LESSONS.md');
 }
 
 export const deleteQuery = (userId: string, id: string): Query => ({
