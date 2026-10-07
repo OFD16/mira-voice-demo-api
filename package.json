@@ -5,7 +5,9 @@
   "type": "module",
   "description": "Mira Voice Demo — backend: session/token API + LiveKit voice agent (STT → LLM → TTS or speech-to-speech), memory (pgvector), fail-closed safety, latency metrics.",
   "license": "MIT",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev:api": "tsx watch src/server.ts",
     "dev:agent": "tsx src/agent.ts dev",
@@ -29,13 +31,13 @@
     "openai": "^4.77.0",
     "pg": "^8.13.1",
     "pgvector": "^0.2.0",
+    "tsx": "^4.19.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.0",
     "@types/pg": "^8.11.10",
-    "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   }
 }

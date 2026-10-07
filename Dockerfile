@@ -6,7 +6,8 @@ FROM node:22-slim AS base
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package*.json ./
-RUN npm ci --omit=dev && npm i --no-save tsx && chown -R node:node /app
+# tsx is a runtime dependency (we run TypeScript directly), so --omit=dev keeps it.
+RUN npm ci --omit=dev && chown -R node:node /app
 COPY --chown=node:node . .
 USER node
 
