@@ -5,6 +5,9 @@
 FROM node:22-slim AS base
 WORKDIR /app
 ENV NODE_ENV=production
+# The slim image has no system CA bundle. LiveKit's native (Rust) client verifies TLS against the OS roots,
+# so without this the agent registers fine but fails to join rooms ("no native root CA certificates found").
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY package*.json ./
 # tsx is a runtime dependency (we run TypeScript directly), so --omit=dev keeps it.
 RUN npm ci --omit=dev && chown -R node:node /app
