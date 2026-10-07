@@ -41,12 +41,16 @@ npm test
 ```
 
 ## Deploy (Dokploy / any Docker host)
-`docker-compose.prod.yml` runs three services from one image: **api** (behind your domain, port 3000),
-**agent** (outbound connections only, no port) and **db** (pgvector, persistent volume).
-1. Dokploy → Create → **Compose** → this repo, compose path `docker-compose.prod.yml`.
-2. **Environment**: all keys from `.env.example` (plus `POSTGRES_PASSWORD`).
-3. **Domains**: service `api`, port `3000`, HTTPS on.
-4. Deploy, then check `https://<your-domain>/health`.
+One Dockerfile, two targets: **api** (behind your domain, port 3000) and **agent** (outbound only, no port).
+Postgres must have pgvector: image  (match your major version).
+
+**Dokploy, two Applications** from this repo (Build Type: Dockerfile):
+| App | Docker Build Stage | Domain | Env |
+|---|---|---|---|
+| api |  | your domain → port 3000, HTTPS |  keys,  (internal),  |
+| agent |  | none | same keys |
+
+Then check . Alternative: Dokploy **Compose** with  (api + agent + db).
 
 API and agent are separate on purpose: the API serves short requests, the agent is long-lived and CPU-heavy
 (VAD + turn detection), so they scale differently.

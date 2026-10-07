@@ -5,8 +5,7 @@
 # Set the env vars in Dokploy → Environment (see .env.example); never commit them.
 services:
   api:
-    build: .
-    command: ['npm', 'run', 'start:api']
+    build: { context: ., target: api }
     restart: unless-stopped
     environment: &env
       LIVEKIT_URL: ${LIVEKIT_URL}
@@ -34,8 +33,7 @@ services:
       retries: 3
 
   agent:
-    build: .
-    command: ['npm', 'run', 'start:agent']
+    build: { context: ., target: agent }
     restart: unless-stopped
     environment: *env
     depends_on: [db]
