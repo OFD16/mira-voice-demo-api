@@ -42,15 +42,15 @@ npm test
 
 ## Deploy (Dokploy / any Docker host)
 One Dockerfile, two targets: **api** (behind your domain, port 3000) and **agent** (outbound only, no port).
-Postgres must have pgvector: image  (match your major version).
+Postgres must have pgvector: image `pgvector/pgvector:pg18` (match your major version).
 
 **Dokploy, two Applications** from this repo (Build Type: Dockerfile):
 | App | Docker Build Stage | Domain | Env |
 |---|---|---|---|
-| api |  | your domain → port 3000, HTTPS |  keys,  (internal),  |
-| agent |  | none | same keys |
+| api | `api` | your domain → port 3000, HTTPS | `.env.example` keys, `DATABASE_URL` (internal), `TRUST_PROXY=1` |
+| agent | `agent` | none | same keys |
 
-Then check . Alternative: Dokploy **Compose** with  (api + agent + db).
+Then check `https://<your-domain>/health`. Alternative: Dokploy **Compose** with `docker-compose.prod.yml` (api + agent + db).
 
 API and agent are separate on purpose: the API serves short requests, the agent is long-lived and CPU-heavy
 (VAD + turn detection), so they scale differently.
