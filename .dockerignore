@@ -1,0 +1,11 @@
+# Secrets never go into an image: Dokploy injects env vars at runtime.
+.env
+.env.*
+!.env.example
+# Host-built deps would overwrite the Linux ones installed by `npm ci` (native bindings differ per OS).
+node_modules
+.git
+.github
+test
+docs
+*.log

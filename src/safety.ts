@@ -2,6 +2,7 @@
 // 1) Deterministic keyword layer: ~0 ms, cannot be prompt-injected.
 // 2) LLM classifier for indirect phrasing. Timeout, error or unexpected output => RISK.
 import OpenAI from 'openai';
+import { recordSideUsage } from './usage.js';
 
 export type SafetyVerdict = { flag: boolean; layer: 'keyword' | 'classifier' | 'fail_closed' | 'none'; ms: number };
 export type Classifier = (text: string, signal: AbortSignal) => Promise<string>;
@@ -25,9 +26,9 @@ export const openaiClassifier: Classifier = async (text, signal) => {
   _oa ??= new OpenAI();
   const r = await _oa.chat.completions.create(
     {
-      model: 'gpt-4o-mini',
+      model: 'gemini-3.5-flash-lite',
       temperature: 0,
-      max_tokens: 3,
+      max_tokens: 50, // Gemini spends hidden "thinking" tokens first; 3 would return an empty answer (= RISK)
       messages: [
         {
           role: 'system',
@@ -40,6 +41,7 @@ export const openaiClassifier: Classifier = async (text, signal) => {
     },
     { signal },
   );
+  recordSideUsage('safety', r.usage);
   return r.choices[0]?.message?.content ?? '';
 };
 
@@ -55,7 +57,31 @@ export const openaiClassifier: Classifier = async (text, signal) => {
 //   Terms: guardrail, fail-closed vs fail-open, deterministic layer. Test: npm test -- --test-name-pattern=safety
 export async function checkSafety(
   text: string,
-  { classify = openaiClassifier, timeoutMs = 600 }: { classify?: Classifier; timeoutMs?: number } = {},
+  { classify = openaiClassifier, timeoutMs = 1500 }: { classify?: Classifier; timeoutMs?: number } = {},
 ): Promise<SafetyVerdict> {
-  throw new Error('TODO(L1-03) — see docs/LESSONS.md');
+  const t0 = performance.now();
+  const done = (flag: boolean, layer: SafetyVerdict['layer']): SafetyVerdict =>
+    ({ flag, layer, ms: Math.round(performance.now() - t0) });
+
+  if (!text.trim()) return done(false, 'none');
+  if (KEYWORDS.some((re) => re.test(text))) return done(true, 'keyword');
+
+  const ac = new AbortController();
+  let timer: NodeJS.Timeout | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      ac.abort();
+      reject(new Error(`classifier timeout ${timeoutMs}ms`));
+    }, timeoutMs);
+  });
+
+  try {
+    const out = await Promise.race([classify(text, ac.signal), timeout]);
+    return done(out.trim().toUpperCase() !== 'SAFE', 'classifier');
+  } catch (err) {
+    console.warn('safety fail-closed:', (err as Error).message);
+    return done(true, 'fail_closed');
+  } finally {
+    clearTimeout(timer);
+  }
 }

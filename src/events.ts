@@ -20,5 +20,11 @@ export const encodeEvent = (ev: MiraEvent) => new TextEncoder().encode(JSON.stri
 //   Common mistake: reliable:false (lossy) for transcripts → random missing lines on mobile networks.
 //   Terms: data channel, reliable vs lossy, topic. Test: npm test -- --test-name-pattern=events
 export async function publishEvent(publisher: DataPublisher | undefined, ev: MiraEvent): Promise<void> {
-  throw new Error('TODO(L1-06) — see docs/LESSONS.md');
+  if (!publisher) return;
+  try {
+    const bytes = encodeEvent(ev);
+    await publisher.publishData(bytes, { reliable: true, topic: EVENTS_TOPIC });
+  } catch (err) {
+    console.error('publishEvent failed', String(err), ev);
+   }
 }

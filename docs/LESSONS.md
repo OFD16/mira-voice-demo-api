@@ -86,7 +86,7 @@
 - **Önce hatayı yap:**
   1. `interruption.minDuration: 0` yap. Konuşurken öksür; bot her seferinde susar (false interruption).
   2. `turnDetection` vermeden `endpointing.minDelay: 200` dene. "Bugün şey… ee…" deyince bot sözünü keser.
-- **Doğrusu:** Cascaded için Deepgram + GPT-4o-mini + Cartesia, `inference.TurnDetector()`, `minDelay 500` ve `minDuration 500`. Realtime için `openai.realtime.RealtimeModel`.
+- **Doğrusu:** Cascaded için Deepgram + gemini-2.5-flash + Cartesia, `inference.TurnDetector()`, `minDelay 500` ve `minDuration 500`. Realtime için `openai.realtime.RealtimeModel`.
 - **Ölçüm:** Uygulamada "p50 · p95" rozetine bak. PowerShell'de `$env:MIN_DELAY=300; npm run dev:agent` ile 300 ve 500 değerlerini karşılaştır.
 
 ## L1-09 · API kimlik doğrulama (`src/app.ts` → `requireDemoKey`)
