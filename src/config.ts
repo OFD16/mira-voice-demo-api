@@ -19,10 +19,7 @@ const EnvSchema = z.object({
 
 export type Config = z.infer<typeof EnvSchema>;
 
-// TODO(L1-01): Validate `env` with EnvSchema.
-//   - On failure throw an Error whose message lists the invalid keys (e.g. "Invalid env: LIVEKIT_URL, DEMO_API_KEY").
-//   - Never print the VALUES — they are secrets.
-//   Terms: fail-fast, 12-factor config. Test: npm test -- --test-name-pattern=config
+// Fail fast on bad env. The error lists invalid keys only, never values (they are secrets).
 export function loadConfig(env: Record<string, string | undefined> = process.env): Config {
   const parsed = EnvSchema.safeParse(env);
   if (!parsed.success) {

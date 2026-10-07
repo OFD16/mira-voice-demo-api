@@ -14,11 +14,7 @@ type DataPublisher = {
 
 export const encodeEvent = (ev: MiraEvent) => new TextEncoder().encode(JSON.stringify(ev));
 
-// TODO(L1-06): Publish one event to the app.
-//   - encodeEvent(ev) → publisher.publishData(bytes, { reliable: true, topic: EVENTS_TOPIC })
-//   - swallow + log errors: a UI event must NEVER crash the voice session
-//   Common mistake: reliable:false (lossy) for transcripts → random missing lines on mobile networks.
-//   Terms: data channel, reliable vs lossy, topic. Test: npm test -- --test-name-pattern=events
+// Reliable data-channel event to the app. Errors are logged, never thrown: UI events must not end a call.
 export async function publishEvent(publisher: DataPublisher | undefined, ev: MiraEvent): Promise<void> {
   if (!publisher) return;
   try {

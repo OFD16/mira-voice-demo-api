@@ -19,12 +19,7 @@ const SessionBody = z.object({
   lang: z.enum(LANGS).default(DEFAULT_LANG),
 });
 
-// TODO(L1-09): Demo-level auth middleware. The app sends header `x-demo-key`.
-//   - missing or wrong → 401 { error: 'unauthorized' }
-//   - compare with crypto.timingSafeEqual on equal-length Buffers (plain === leaks timing)
-//   Common mistake: putting LIVEKIT_API_SECRET in the mobile app "to skip the API". Anyone can unzip an APK.
-//   Real prod: replace with your user auth (JWT from your login), this key only identifies the app build.
-//   Terms: shared secret, timing attack, secret in client. Test: npm test -- --test-name-pattern=api
+// Demo-level auth: constant-time compare of `x-demo-key`. Real prod would use user auth (JWT).
 export function requireDemoKey(expected: string) {
   // Length is already enforced by EnvSchema (>= 16 chars) in config.ts — validate in one place.
   const want = Buffer.from(expected);

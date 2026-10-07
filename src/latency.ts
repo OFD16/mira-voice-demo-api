@@ -12,15 +12,7 @@ export type TurnLatency = {
 
 type AnyMetric = { type: string; speechId?: string;[k: string]: unknown };
 
-// TODO(L1-04): Aggregate metrics by speechId and return a TurnLatency once a turn has all three parts.
-//   - 'eou_metrics'  -> endOfUtteranceDelayMs, transcriptionDelayMs
-//   - 'llm_metrics'  -> ttftMs
-//   - 'tts_metrics'  -> ttfbMs
-//   - ignore metrics without speechId
-//   - when eou + llm + tts are all present: delete the entry (no memory leak) and return the TurnLatency
-//   - otherwise return null
-//   Common mistake: averaging per component across turns — you lose which turn was slow; p95 needs per-turn totals.
-//   Terms: latency budget, TTFT, TTFB, p50/p95. Test: npm test -- --test-name-pattern=latency
+// Groups EOU / LLM / TTS metrics by speechId and returns a TurnLatency once a turn has all three.
 export class LatencyTracker {
   private turns = new Map<string, Partial<TurnLatency>>();
   private static MAX_PENDING = 50;

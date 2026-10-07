@@ -14,8 +14,7 @@
     "console": "tsx src/agent.ts console",
     "download-files": "tsx src/agent.ts download-files",
     "test": "tsx --test test/*.test.ts",
-    "typecheck": "tsc --noEmit",
-    "make-exercise": "node scripts/make-exercise.mjs"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@livekit/agents": "1.9.1",

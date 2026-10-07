@@ -81,13 +81,7 @@ class Companion extends voice.Agent {
       .catch((e) => console.warn('memory learn failed:', String(e)));
   }
 
-  // TODO(L1-07): Run the safety check BEFORE the LLM sees the user's turn.
-  //   - text = newMessage.textContent ?? ''
-  //   - v = await checkSafety(text); emit({ type:'safety', flagged:v.flag, layer:v.layer, ms:v.ms })
-  //   - if v.flag: this.session.say(<TR or EN crisis reply>, { allowInterruptions:false }) and
-  //     throw new voice.StopResponse()   ← this skips the LLM entirely for this turn
-  //   Common mistake: asking the LLM to "be careful" in the prompt instead — a prompt can be jailbroken, code can't.
-  //   Terms: deterministic crisis protocol, StopResponse, onUserTurnCompleted hook.
+  // Safety runs BEFORE the LLM sees the turn. On risk: fixed crisis reply + StopResponse (LLM skipped).
   override async onUserTurnCompleted(chatCtx: llm.ChatContext, newMessage: llm.ChatMessage): Promise<void> {
     const text = newMessage.textContent ?? '';
     const v = await checkSafety(text);

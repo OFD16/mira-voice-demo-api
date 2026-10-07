@@ -8,12 +8,7 @@ import { recordSideUsage } from './usage.js';
 export type Query = { text: string; values: unknown[] };
 export type MemoryRow = { id: string; fact: string; created_at: string };
 
-// TODO(L1-05): Build the SQL for "top-K facts closest to this embedding, for THIS user only".
-//   - SELECT id, fact FROM memories WHERE user_id = $1 ORDER BY embedding <=> $2 LIMIT $3
-//   - values: [userId, embeddingSql, k]
-//   Common mistake: forgetting `WHERE user_id = $1` → one user's private mental-health notes leak into another's prompt.
-//   Common mistake #2: string-concatenating userId into SQL → SQL injection. Always use $1 placeholders.
-//   Terms: embedding, cosine distance (<=>), RAG, HNSW index, tenant isolation. Test: npm test -- --test-name-pattern=memory
+// Top-K nearest facts for THIS user only (`WHERE user_id = $1`), always parameterized.
 export function recallQuery(userId: string, embeddingSql: string, k: number): Query {
   return {
     text: 'SELECT id::text, fact, created_at FROM memories WHERE user_id = $1 ORDER BY embedding <=> $2 LIMIT $3',

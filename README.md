@@ -51,8 +51,4 @@ npm test
 API and agent are separate on purpose: the API serves short requests, the agent is long-lived and CPU-heavy
 (VAD + turn detection), so they scale differently.
 
-## History
-- Tag `learning-v1`: the learning version with guided `TODO(Lx-yy)` exercises ([docs/LESSONS.md](docs/LESSONS.md), Turkish).
-- `main`: the complete implementation, extended beyond the exercises (languages, background memory, cost guards).
-
 MIT · built by [Ömer Faruk Demirsoy](https://www.linkedin.com/in/omerfarukdemirsoy)

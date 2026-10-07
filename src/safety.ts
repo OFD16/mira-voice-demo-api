@@ -45,16 +45,7 @@ export const openaiClassifier: Classifier = async (text, signal) => {
   return r.choices[0]?.message?.content ?? '';
 };
 
-// TODO(L1-03): Implement the fail-closed check.
-//   1. empty text            -> { flag:false, layer:'none' }
-//   2. any KEYWORDS match    -> { flag:true,  layer:'keyword' }  (do NOT call the classifier)
-//   3. call classify(text, signal) with an AbortController that aborts after timeoutMs
-//        - output (trim/upper) === 'SAFE' -> { flag:false, layer:'classifier' }
-//        - anything else                 -> { flag:true,  layer:'classifier' }
-//   4. timeout OR thrown error -> { flag:true, layer:'fail_closed' }   ← the whole point
-//   Always fill `ms` with elapsed time (performance.now()).
-//   Common mistake: `catch { return { flag:false } }` = FAIL-OPEN. One provider outage and a crisis slips through.
-//   Terms: guardrail, fail-closed vs fail-open, deterministic layer. Test: npm test -- --test-name-pattern=safety
+// Fail-closed: keywords first, then a timed classifier. Timeout, error or unclear output → flag.
 export async function checkSafety(
   text: string,
   { classify = openaiClassifier, timeoutMs = 1500 }: { classify?: Classifier; timeoutMs?: number } = {},
